@@ -1,0 +1,8 @@
+[
+  {"id": "F15", "name": "früh", "start": "06:45", "end": "14:57", "color": "#F8C8DC", "vacation": false},
+  {"id": "S21", "name": "spät", "start": "13:03", "end": "21:15", "color": "#A8E6CF", "vacation": false},
+  {"id": "N", "name": "nacht", "start": "21:00", "end": "07:00", "color": "#FFCBA4", "vacation": false},
+  {"id": "T07", "name": "früh", "start": "07:00", "end": "15:12", "color": "#D7BDE2", "vacation": false},
+  {"id": "Urlaub", "name": "", "start": null, "end": null, "color": "#FFF3A3", "vacation": true},
+  {"id": "Frei", "name": "", "start": null, "end": null, "color": "#D9D9DE", "vacation": false}
+]

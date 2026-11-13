@@ -1,0 +1,40 @@
+name: Nightshift
+options:
+  bundleIdPrefix: de.greismicha
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: "YES"
+targets:
+  Nightshift:
+    type: application
+    platform: iOS
+    sources:
+      - Nightshift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.greismicha.nightshift
+        TARGETED_DEVICE_FAMILY: "1"
+        INFOPLIST_KEY_CFBundleDisplayName: Nightshift
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+  NightshiftTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - NightshiftTests
+    dependencies:
+      - target: Nightshift
+schemes:
+  Nightshift:
+    build:
+      targets:
+        Nightshift: all
+        NightshiftTests: [test]
+    test:
+      targets:
+        - NightshiftTests

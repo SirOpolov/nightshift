@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Projekt erzeugen
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Tests
+        run: |
+          xcrun simctl list devices available
+          xcodebuild test -scheme Nightshift -destination 'platform=iOS Simulator,name=iPhone 17'
+      - name: Build
+        run: xcodebuild build -scheme Nightshift -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+      - name: IPA packen
+        run: |
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/Nightshift.app Payload/
+          zip -r Nightshift.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nightshift
+          path: Nightshift.ipa
