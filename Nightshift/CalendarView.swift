@@ -73,6 +73,8 @@ struct CalendarView: View {
                     }
                     .buttonStyle(.glassProminent)
                     .buttonBorderShape(.circle)
+                    .tint(turquoise)
+                    .foregroundStyle(.black)
                     .padding(16)
                 }
             }
@@ -128,8 +130,8 @@ struct CalendarView: View {
     private var palette: some View {
         VStack(spacing: 8) {
             Text(hint)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(accent)
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(store.shiftTypes) { shift in
@@ -160,7 +162,7 @@ struct CalendarView: View {
                 .background(color, in: Capsule())
                 .overlay {
                     Capsule()
-                        .strokeBorder(Color.accentColor, lineWidth: tool == id ? 3 : 0)
+                        .strokeBorder(Color.primary, lineWidth: tool == id ? 3 : 0)
                 }
         }
     }

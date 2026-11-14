@@ -20,6 +20,7 @@ struct NightshiftApp: App {
                 }
             }
             .environment(store)
+            .tint(accent)
             .fontDesign(.rounded)
             .dynamicTypeSize(fontSizes[fontSize])
             .preferredColorScheme(theme == 1 ? .light : theme == 2 ? .dark : nil)

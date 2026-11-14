@@ -20,23 +20,15 @@ struct StatsView: View {
                         }
                         .pickerStyle(.menu)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 6)
+                    .background(card, in: RoundedRectangle(cornerRadius: 16))
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
                         ForEach(1...12, id: \.self) { month in
                             NavigationLink {
                                 MonthStatsView(year: year, month: month)
                             } label: {
-                                VStack(spacing: 4) {
-                                    Text(monthName(month))
-                                        .font(.subheadline.weight(.semibold))
-                                    Text(hours(store.stats(from: day(year, month, 1), to: lastDay(year, month)).minutes))
-                                        .font(.footnote)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.7)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                                MonthTile(year: year, month: month)
                             }
                             .buttonStyle(.plain)
                         }
@@ -55,38 +47,81 @@ struct StatsView: View {
     }
 }
 
+struct MonthTile: View {
+    @Environment(Store.self) private var store
+    let year: Int
+    let month: Int
+
+    var body: some View {
+        let current = calendar.isDate(day(year, month, 1), equalTo: .now, toGranularity: .month)
+        let minutes = store.stats(from: day(year, month, 1), to: lastDay(year, month)).minutes
+        VStack(spacing: 4) {
+            Text(monthName(month))
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(current ? accent : Color.primary)
+            Text(hours(minutes))
+                .font(.footnote)
+                .foregroundStyle(Color.secondary)
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background(card, in: RoundedRectangle(cornerRadius: 14))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(accent, lineWidth: current ? 1.5 : 0)
+        }
+    }
+}
+
 struct SummaryCard: View {
     @Environment(Store.self) private var store
     let stats: Stats
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Stunden gearbeitet")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Text(hours(stats.minutes))
-                .font(.largeTitle.weight(.bold))
-            Text(String(stats.vacationDays) + (stats.vacationDays == 1 ? " Tag Urlaub" : " Tage Urlaub"))
-                .font(.headline)
-            Divider()
-            ForEach(store.shiftTypes) { shift in
-                let count = stats.counts[shift.id] ?? 0
-                HStack {
-                    Circle()
-                        .fill(shift.tint)
-                        .frame(width: 12, height: 12)
-                    Text(shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")")
-                    Spacer()
-                    Text(String(count) + "×")
-                    Text(shift.start == nil ? "" : hours(count * shift.minutes))
-                        .frame(width: 84, alignment: .trailing)
-                }
-                .font(.subheadline)
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Stunden gearbeitet")
+                    .font(.subheadline.weight(.medium))
+                    .opacity(0.7)
+                Text(hours(stats.minutes))
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Label(String(stats.vacationDays) + (stats.vacationDays == 1 ? " Tag Urlaub" : " Tage Urlaub"), systemImage: "sun.max.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.white.opacity(0.5), in: Capsule())
             }
+            .foregroundStyle(.black)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(18)
+            .background(LinearGradient(colors: [turquoiseLight, turquoise], startPoint: .topLeading, endPoint: .bottomTrailing))
+            VStack(spacing: 10) {
+                ForEach(store.shiftTypes) { shift in
+                    let count = stats.counts[shift.id] ?? 0
+                    HStack {
+                        Circle()
+                            .fill(shift.tint)
+                            .frame(width: 12, height: 12)
+                        Text(shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")")
+                        Spacer()
+                        Text(String(count) + "×")
+                            .foregroundStyle(Color.secondary)
+                        Text(shift.start == nil ? "" : hours(count * shift.minutes))
+                            .fontWeight(.medium)
+                            .frame(width: 84, alignment: .trailing)
+                    }
+                    .font(.subheadline)
+                    .opacity(count == 0 ? 0.45 : 1)
+                }
+            }
+            .padding(18)
+            .background(card)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }
 
@@ -122,6 +157,7 @@ struct WeekCard: View {
             HStack {
                 Text("KW " + String(weekNumber(week)))
                     .font(.headline)
+                    .foregroundStyle(accent)
                 Spacer()
                 Text(hours(stats.minutes))
                     .font(.headline)
@@ -146,6 +182,6 @@ struct WeekCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        .background(card, in: RoundedRectangle(cornerRadius: 16))
     }
 }

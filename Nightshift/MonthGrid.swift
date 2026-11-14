@@ -9,22 +9,23 @@ struct MonthGrid: View {
     var tap: (Date) -> Void = { _ in }
 
     var body: some View {
-        Grid(horizontalSpacing: 3, verticalSpacing: 3) {
+        Grid(horizontalSpacing: 4, verticalSpacing: 4) {
             GridRow {
                 Text("KW")
+                    .foregroundStyle(Color.secondary)
                     .frame(width: 26)
                 ForEach(weekdays, id: \.self) { name in
                     Text(name)
+                        .foregroundStyle(name == "Sa" || name == "So" ? accent : Color.secondary)
                         .frame(maxWidth: .infinity)
                 }
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            .font(.caption.weight(.medium))
             ForEach(weeks(year: year, month: month), id: \.self) { week in
                 GridRow {
                     Text(String(weekNumber(week)))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(accent)
                         .frame(width: 26)
                     ForEach(0..<7, id: \.self) { index in
                         if let date = week[index] {
@@ -63,14 +64,14 @@ struct DayCell: View {
         }
         .lineLimit(1)
         .minimumScaleFactor(0.5)
-        .foregroundStyle(shift == nil ? Color.primary : Color.black)
-        .padding(.vertical, 5)
+        .foregroundStyle(shift != nil ? Color.black : today ? accent : Color.primary)
+        .padding(.vertical, 6)
         .padding(.horizontal, 1)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(shift?.tint ?? Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 8))
+        .background(shift?.tint ?? card, in: RoundedRectangle(cornerRadius: 10))
         .overlay {
-            RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(selected ? Color.accentColor : Color.primary, lineWidth: selected ? 3 : today ? 1.5 : 0)
+            RoundedRectangle(cornerRadius: 10)
+                .strokeBorder(selected ? Color.primary : accent, lineWidth: selected ? 3 : today ? 2 : 0)
         }
     }
 }
@@ -81,28 +82,34 @@ struct MiniMonth: View {
     let month: Int
 
     var body: some View {
+        let rows = weeks(year: year, month: month)
+        let current = calendar.isDate(day(year, month, 1), equalTo: .now, toGranularity: .month)
         VStack(alignment: .leading, spacing: 3) {
             Text(monthName(month))
                 .font(.subheadline.weight(.semibold))
+                .foregroundStyle(current ? accent : Color.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            ForEach(weeks(year: year, month: month), id: \.self) { week in
-                HStack(spacing: 2) {
+                .padding(.bottom, 2)
+            ForEach(0..<6, id: \.self) { row in
+                HStack(spacing: 3) {
                     ForEach(0..<7, id: \.self) { index in
                         RoundedRectangle(cornerRadius: 3)
-                            .fill(color(week[index]))
+                            .fill(color(row < rows.count ? rows[row][index] : nil))
                             .aspectRatio(1, contentMode: .fit)
                     }
                 }
             }
         }
-        .padding(8)
-        .frame(maxHeight: .infinity, alignment: .top)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        .padding(10)
+        .background(card, in: RoundedRectangle(cornerRadius: 14))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(accent, lineWidth: current ? 1.5 : 0)
+        }
     }
 
     private func color(_ date: Date?) -> Color {
         guard let date else { return .clear }
-        return store.shift(on: date)?.tint ?? Color(.systemGray4)
+        return store.shift(on: date)?.tint ?? Color.primary.opacity(0.12)
     }
 }
