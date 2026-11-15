@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CalendarView: View {
     @Environment(Store.self) private var store
+    @Environment(\.accent) private var accent
     @State private var year = calendar.component(.year, from: .now)
     @State private var month = calendar.component(.month, from: .now)
     @State private var showYear = false

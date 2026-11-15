@@ -22,6 +22,11 @@ struct ShiftType: Codable, Identifiable, Hashable {
         return start + " – " + end
     }
 
+    var cellTime: String {
+        guard let start, let end else { return "" }
+        return start + " –\n" + end
+    }
+
     var tint: Color {
         let value = Int(color.dropFirst(), radix: 16) ?? 0
         let red = Double((value >> 16) & 255) / 255

@@ -7,7 +7,9 @@ struct SettingsView: View {
     @Environment(Store.self) private var store
     @AppStorage("theme") private var theme = 0
     @AppStorage("fontSize") private var fontSize = 2
+    @AppStorage("accent") private var accent = ""
     @State private var confirmDelete = false
+    private let swatches = ["", "#007AFF", "#5856D6", "#AF52DE", "#FF2D55", "#FF3B30", "#34C759", "#30B0C7"]
 
     var body: some View {
         NavigationStack {
@@ -22,6 +24,43 @@ struct SettingsView: View {
                     Stepper("Schriftgröße: " + fontSizeNames[fontSize], value: $fontSize, in: 0...4)
                 } header: {
                     Text("Darstellung")
+                }
+                Section {
+                    HStack(spacing: 10) {
+                        ForEach(swatches, id: \.self) { hex in
+                            Button {
+                                accent = hex
+                            } label: {
+                                Circle()
+                                    .fill(themeColor(hex))
+                                    .frame(width: 28, height: 28)
+                                    .overlay {
+                                        if accent == hex {
+                                            Image(systemName: "checkmark")
+                                                .font(.caption.bold())
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                    ColorPicker("Eigene Farbe", selection: Binding(get: { themeColor(accent) }, set: { accent = hexString($0) }), supportsOpacity: false)
+                    HStack {
+                        Text("Hex")
+                        TextField("#RRGGBB", text: $accent)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                            .font(.body.monospaced())
+                            .multilineTextAlignment(.trailing)
+                    }
+                    if !accent.isEmpty {
+                        Button("Standardfarbe wiederherstellen") {
+                            accent = ""
+                        }
+                    }
+                } header: {
+                    Text("Akzentfarbe")
                 }
                 Section {
                     ForEach(store.shiftTypes) { shift in

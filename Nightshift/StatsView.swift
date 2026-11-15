@@ -49,6 +49,7 @@ struct StatsView: View {
 
 struct MonthTile: View {
     @Environment(Store.self) private var store
+    @Environment(\.accent) private var accent
     let year: Int
     let month: Int
 
@@ -148,6 +149,7 @@ struct MonthStatsView: View {
 
 struct WeekCard: View {
     @Environment(Store.self) private var store
+    @Environment(\.accent) private var accent
     let week: [Date?]
 
     var body: some View {

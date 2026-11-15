@@ -5,6 +5,7 @@ struct NightshiftApp: App {
     @State private var store = Store()
     @AppStorage("theme") private var theme = 0
     @AppStorage("fontSize") private var fontSize = 2
+    @AppStorage("accent") private var accentHex = ""
 
     var body: some Scene {
         WindowGroup {
@@ -20,7 +21,8 @@ struct NightshiftApp: App {
                 }
             }
             .environment(store)
-            .tint(accent)
+            .environment(\.accent, themeColor(accentHex))
+            .tint(themeColor(accentHex))
             .fontDesign(.rounded)
             .dynamicTypeSize(fontSizes[fontSize])
             .preferredColorScheme(theme == 1 ? .light : theme == 2 ? .dark : nil)

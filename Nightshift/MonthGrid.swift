@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MonthGrid: View {
     @Environment(Store.self) private var store
+    @Environment(\.accent) private var accent
     let year: Int
     let month: Int
     var compact = false
@@ -29,7 +30,7 @@ struct MonthGrid: View {
                         .frame(width: 26)
                     ForEach(0..<7, id: \.self) { index in
                         if let date = week[index] {
-                            DayCell(date: date, shift: store.shift(on: date), selected: date == selected)
+                            DayCell(date: date, shift: store.shift(on: date), selected: date == selected, compact: compact)
                                 .frame(height: compact ? 52 : nil)
                                 .onTapGesture {
                                     tap(date)
@@ -46,9 +47,11 @@ struct MonthGrid: View {
 }
 
 struct DayCell: View {
+    @Environment(\.accent) private var accent
     let date: Date
     let shift: ShiftType?
     let selected: Bool
+    let compact: Bool
 
     var body: some View {
         let today = calendar.isDateInToday(date)
@@ -60,6 +63,12 @@ struct DayCell: View {
                     .font(.caption.weight(.semibold))
                 Text(shift.name)
                     .font(.caption2)
+                if !compact {
+                    Text(shift.cellTime)
+                        .font(.system(size: 9))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                }
             }
         }
         .lineLimit(1)
@@ -78,6 +87,7 @@ struct DayCell: View {
 
 struct MiniMonth: View {
     @Environment(Store.self) private var store
+    @Environment(\.accent) private var accent
     let year: Int
     let month: Int
 
