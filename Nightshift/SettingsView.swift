@@ -92,7 +92,7 @@ struct SettingsView: View {
                         }
                     }
                     Button("PDF exportieren") {
-                        pdf = renderReport(YearReport(store: store, year: exportYear), accent: themeColor(accent))
+                        pdf = renderReport(YearReport(store: store, year: exportYear))
                     }
                 } header: {
                     Text("Export")
