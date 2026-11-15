@@ -1,4 +1,5 @@
 import SwiftUI
+import QuickLook
 
 let fontSizes: [DynamicTypeSize] = [.small, .medium, .large, .xLarge, .xxLarge]
 let fontSizeNames = ["Klein", "Mittel", "Normal", "Groß", "Sehr groß"]
@@ -9,6 +10,8 @@ struct SettingsView: View {
     @AppStorage("fontSize") private var fontSize = 2
     @AppStorage("accent") private var accent = ""
     @State private var confirmDelete = false
+    @State private var exportYear = calendar.component(.year, from: .now)
+    @State private var pdf: URL?
     private let swatches = ["", "#007AFF", "#5856D6", "#AF52DE", "#FF2D55", "#FF3B30", "#34C759", "#30B0C7"]
 
     var body: some View {
@@ -83,6 +86,20 @@ struct SettingsView: View {
                     Text("Pro Arbeitstag werden 30 Minuten Pause abgezogen. Urlaub und Frei zählen 0 Stunden. Die Auswertung zählt nur Tage bis heute.")
                 }
                 Section {
+                    Picker("Jahr", selection: $exportYear) {
+                        ForEach(years, id: \.self) { value in
+                            Text(String(value)).tag(value)
+                        }
+                    }
+                    Button("PDF exportieren") {
+                        pdf = renderReport(YearReport(store: store, year: exportYear), accent: themeColor(accent))
+                    }
+                } header: {
+                    Text("Export")
+                } footer: {
+                    Text("Jahresauswertung als PDF zum Teilen, Speichern oder Drucken.")
+                }
+                Section {
                     LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
                     LabeledContent("Einträge", value: String(store.entries.count))
                 } header: {
@@ -109,12 +126,18 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Einstellungen")
+            .quickLookPreview($pdf)
             .confirmationDialog("Alle Einträge löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
                     store.clear()
                 }
             }
         }
+    }
+
+    private var years: [Int] {
+        let used = store.entries.keys.compactMap { Int($0.prefix(4)) }
+        return Set(used + [calendar.component(.year, from: .now)]).sorted()
     }
 
     private var raw: String {
