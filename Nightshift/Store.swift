@@ -52,18 +52,6 @@ class Store {
         save()
     }
 
-    func fillDemo() {
-        if shiftTypes.isEmpty {
-            return
-        }
-        let first = calendar.dateInterval(of: .month, for: .now)!.start
-        for offset in 0..<28 {
-            let date = calendar.date(byAdding: .day, value: offset, to: first)!
-            entries[dayKey(date)] = shiftTypes[(offset / 4) % shiftTypes.count].id
-        }
-        save()
-    }
-
     func clear() {
         entries = [:]
         save()

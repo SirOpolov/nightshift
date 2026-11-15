@@ -37,26 +37,28 @@ struct ShiftEditor: View {
                     adding = true
                 }
                 .buttonStyle(.glassProminent)
+                .popover(isPresented: $adding) {
+                    ShiftForm()
+                        .frame(minWidth: 320, minHeight: 360)
+                        .presentationCompactAdaptation(.popover)
+                }
                 Button("Löschen", role: .destructive) {
                     confirmDelete = true
                 }
                 .buttonStyle(.glass)
                 .disabled(selected.isEmpty)
+                .confirmationDialog(
+                    selected.count == 1 ? "Schicht löschen?" : String(selected.count) + " Schichten löschen?",
+                    isPresented: $confirmDelete,
+                    titleVisibility: .visible
+                ) {
+                    Button("Löschen", role: .destructive) {
+                        store.remove(selected)
+                        selected = []
+                    }
+                }
             }
             .padding(.vertical, 8)
-        }
-        .sheet(isPresented: $adding) {
-            ShiftForm()
-        }
-        .confirmationDialog(
-            selected.count == 1 ? "Schicht löschen?" : String(selected.count) + " Schichten löschen?",
-            isPresented: $confirmDelete,
-            titleVisibility: .visible
-        ) {
-            Button("Löschen", role: .destructive) {
-                store.remove(selected)
-                selected = []
-            }
         }
     }
 }
@@ -105,7 +107,6 @@ struct ShiftForm: View {
                 .padding(.vertical, 8)
             }
         }
-        .presentationDetents([.medium])
     }
 
     private func time(_ date: Date) -> String {

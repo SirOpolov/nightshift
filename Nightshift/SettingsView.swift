@@ -106,41 +106,23 @@ struct SettingsView: View {
                     Text("Info")
                 }
                 Section {
-                    Button("Beispieldaten erzeugen") {
-                        store.fillDemo()
-                    }
-                    NavigationLink("Rohdaten") {
-                        ScrollView {
-                            Text(raw)
-                                .font(.caption.monospaced())
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(16)
-                        }
-                        .navigationTitle("Rohdaten")
-                    }
                     Button("Alle Daten löschen", role: .destructive) {
                         confirmDelete = true
                     }
-                } header: {
-                    Text("Entwickler")
+                    .confirmationDialog("Alle Einträge löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
+                        Button("Löschen", role: .destructive) {
+                            store.clear()
+                        }
+                    }
                 }
             }
             .navigationTitle("Einstellungen")
             .quickLookPreview($pdf)
-            .confirmationDialog("Alle Einträge löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
-                Button("Löschen", role: .destructive) {
-                    store.clear()
-                }
-            }
         }
     }
 
     private var years: [Int] {
         let used = store.entries.keys.compactMap { Int($0.prefix(4)) }
         return Set(used + [calendar.component(.year, from: .now)]).sorted()
-    }
-
-    private var raw: String {
-        store.entries.sorted { $0.key < $1.key }.map { $0.key + "  " + $0.value }.joined(separator: "\n")
     }
 }
