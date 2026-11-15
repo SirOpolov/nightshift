@@ -63,6 +63,9 @@ struct SettingsView: View {
                     Text("Akzentfarbe")
                 }
                 Section {
+                    NavigationLink("Schichten anpassen") {
+                        ShiftEditor()
+                    }
                     ForEach(store.shiftTypes) { shift in
                         HStack {
                             Circle()
