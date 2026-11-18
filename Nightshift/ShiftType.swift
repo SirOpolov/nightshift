@@ -40,3 +40,19 @@ struct ShiftType: Codable, Identifiable, Hashable {
         return parts[0] * 60 + parts[1]
     }
 }
+
+let baseShifts = [
+    ShiftType(id: "Urlaub", name: "", start: nil, end: nil, color: "#FFF3A3", vacation: true),
+    ShiftType(id: "Frei", name: "", start: nil, end: nil, color: "#D9D9DE", vacation: false)
+]
+
+let legacyShifts = [
+    ShiftType(id: "F15", name: "früh", start: "06:45", end: "14:57", color: "#F8C8DC", vacation: false),
+    ShiftType(id: "S21", name: "spät", start: "13:03", end: "21:15", color: "#A8E6CF", vacation: false),
+    ShiftType(id: "N", name: "nacht", start: "21:00", end: "07:00", color: "#FFCBA4", vacation: false),
+    ShiftType(id: "T07", name: "früh", start: "07:00", end: "15:12", color: "#D7BDE2", vacation: false)
+] + baseShifts
+
+func startShifts(hasEntries: Bool) -> [ShiftType] {
+    hasEntries ? legacyShifts : baseShifts
+}

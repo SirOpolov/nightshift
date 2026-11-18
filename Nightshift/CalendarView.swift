@@ -9,6 +9,7 @@ struct CalendarView: View {
     @State private var editing = false
     @State private var tool: String?
     @State private var start: Date?
+    @State private var overtimeDay: Date?
 
     var body: some View {
         NavigationStack {
@@ -94,7 +95,7 @@ struct CalendarView: View {
     }
 
     private var monthView: some View {
-        MonthGrid(year: year, month: month, selected: start) { date in
+        MonthGrid(year: year, month: month, selected: start, overtimeDay: $overtimeDay) { date in
             tapped(date)
         }
         .padding(.top, 8)
@@ -169,7 +170,11 @@ struct CalendarView: View {
     }
 
     private func tapped(_ date: Date) {
-        guard editing, let tool else { return }
+        guard editing else {
+            overtimeDay = date
+            return
+        }
+        guard let tool else { return }
         guard let first = start else {
             start = date
             return

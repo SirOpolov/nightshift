@@ -83,13 +83,10 @@ struct SummaryCard: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Stunden gearbeitet")
-                    .font(.subheadline.weight(.medium))
-                    .opacity(0.7)
-                Text(hours(stats.minutes))
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                HStack(alignment: .top, spacing: 16) {
+                    total("Stunden gearbeitet", stats.minutes)
+                    total("Überstunden gemacht", stats.overtime)
+                }
                 Label(String(stats.vacationDays) + (stats.vacationDays == 1 ? " Tag Urlaub" : " Tage Urlaub"), systemImage: "sun.max.fill")
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 12)
@@ -123,6 +120,19 @@ struct SummaryCard: View {
             .background(card)
         }
         .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private func total(_ label: String, _ minutes: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.subheadline.weight(.medium))
+                .opacity(0.7)
+            Text(hours(minutes))
+                .font(.system(size: 40, weight: .bold, design: .rounded))
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

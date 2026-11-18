@@ -7,6 +7,7 @@ struct MonthGrid: View {
     let month: Int
     var compact = false
     var selected: Date?
+    var overtimeDay: Binding<Date?> = .constant(nil)
     var tap: (Date) -> Void = { _ in }
 
     var body: some View {
@@ -30,10 +31,15 @@ struct MonthGrid: View {
                         .frame(width: 26)
                     ForEach(0..<7, id: \.self) { index in
                         if let date = week[index] {
-                            DayCell(date: date, shift: store.shift(on: date), selected: date == selected, compact: compact)
+                            DayCell(date: date, shift: store.shift(on: date), overtime: store.overtimeMinutes(on: date), selected: date == selected, compact: compact)
                                 .frame(height: compact ? 52 : nil)
                                 .onTapGesture {
                                     tap(date)
+                                }
+                                .popover(isPresented: popover(date)) {
+                                    OvertimeForm(date: date)
+                                        .frame(minWidth: 300, minHeight: 260)
+                                        .presentationCompactAdaptation(.popover)
                                 }
                         } else {
                             Color.clear
@@ -44,12 +50,23 @@ struct MonthGrid: View {
             }
         }
     }
+
+    private func popover(_ date: Date) -> Binding<Bool> {
+        Binding {
+            overtimeDay.wrappedValue == date
+        } set: { shown in
+            if !shown {
+                overtimeDay.wrappedValue = nil
+            }
+        }
+    }
 }
 
 struct DayCell: View {
     @Environment(\.accent) private var accent
     let date: Date
     let shift: ShiftType?
+    let overtime: Int
     let selected: Bool
     let compact: Bool
 
@@ -69,6 +86,10 @@ struct DayCell: View {
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
                 }
+            }
+            if overtime > 0 {
+                Text("+" + hours(overtime))
+                    .font(.system(size: 9, weight: .bold))
             }
         }
         .lineLimit(1)

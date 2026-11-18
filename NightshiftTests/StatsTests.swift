@@ -21,6 +21,18 @@ final class StatsTests: XCTestCase {
         XCTAssertEqual(stats.counts, ["F15": 1, "N": 1, "Urlaub": 1])
     }
 
+    func testOvertimeCountsOnlyUntilToday() {
+        let overtime = ["2026-10-31": 60, "2026-11-09": 90, "2026-11-12": 15, "2026-11-20": 120]
+        let stats = Stats(entries: [:], overtime: overtime, shiftTypes: [], from: day(2026, 11, 1), to: day(2026, 11, 30), today: day(2026, 11, 13))
+        XCTAssertEqual(stats.overtime, 105)
+    }
+
+    func testStartShiftsKeepLegacyForExistingEntries() {
+        XCTAssertEqual(startShifts(hasEntries: false).map(\.id), ["Urlaub", "Frei"])
+        XCTAssertEqual(startShifts(hasEntries: true).map(\.id), ["F15", "S21", "N", "T07", "Urlaub", "Frei"])
+        XCTAssertEqual(startShifts(hasEntries: true)[0].minutes, early.minutes)
+    }
+
     func testWeeks() {
         let november = weeks(year: 2026, month: 11)
         XCTAssertEqual(november.count, 6)
