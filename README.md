@@ -5,7 +5,7 @@
 <h1 align="center">nightshift</h1>
 
 <p align="center">
-  <em>Schichtplan, Arbeitsstunden und Überstunden auf einen Blick.</em>
+  <em>Shifts, hours and overtime at a glance.</em>
 </p>
 
 <p align="center">
@@ -18,43 +18,44 @@
 
 ---
 
-Ein schlanker Schichtplaner fürs iPhone. Kein Konto, keine Cloud. Schichten eintragen, Stunden ablesen.
+A lightweight shift planner for the iPhone. No account, no cloud. Enter your shifts, read your hours.
 
-- **Kalender mit KW.** Monats- und Jahresansicht, wischen zum Blättern.
-- **Schichten per Zeitraum.** `+` tippen, Schicht wählen, Start- und Endtag tippen.
-- **Eigene Schichten.** Name, Beschreibung, Beginn und Ende frei festlegen. Urlaub und Frei sind immer dabei.
-- **Überstunden.** Tag antippen, Stunden und Minuten eintragen. Der Tag zeigt sie klein an.
-- **Auswertung.** Gearbeitete Stunden und Überstunden pro Jahr, Monat und Woche, Urlaubstage, Anzahl je Schicht. 30 Minuten Pause pro Arbeitstag werden abgezogen, gezählt wird nur bis heute.
-- **PDF-Export.** Jahresauswertung zum Teilen, Speichern oder Drucken.
-- **Deins.** Hell, dunkel oder automatisch, eigene Akzentfarbe, fünf Schriftgrößen.
+- **Calendar with week numbers.** Month and year view, swipe to switch months.
+- **Shifts by range.** Tap `+`, pick a shift, tap the first and the last day.
+- **Your own shifts.** Name, description, start and end as you like. Vacation and Day off are always there.
+- **Overtime.** Tap a day and enter hours and minutes. The day shows it in small print.
+- **Statistics.** Hours worked and overtime per year, month and week, vacation days and a count per shift. A 30 minute break is deducted per work day, only days up to today count.
+- **PDF export.** Yearly report to share, save or print.
+- **English or German.** English by default, switch in **Settings → Language**.
+- **Yours.** Light, dark or automatic, your own accent color, five font sizes.
 
-## Installieren
+## Install
 
-Apple erlaubt nur signierte Apps. GitHub baut die App unsigniert (`Nightshift.ipa`), signiert wird sie mit einer Apple-ID beim Aufspielen.
+Apple only runs signed apps. GitHub builds the app unsigned (`Nightshift.ipa`), it gets signed with an Apple ID while installing.
 
-### 1. Herunterladen
+### 1. Download
 
-1. [Neuestes Release](https://github.com/SirOpolov/nightshift/releases/latest) öffnen (mit GitHub-Login).
-2. `Nightshift.ipa` herunterladen.
+1. Open the [latest release](https://github.com/SirOpolov/nightshift/releases/latest) (GitHub login required).
+2. Download `Nightshift.ipa`.
 
-Messenger blockieren manchmal `.ipa`-Dateien. Dann vor dem Verschicken zippen.
+Some messengers block `.ipa` files. Zip it before sending it.
 
-### 2. Signieren und aufspielen
+### 2. Sign and install
 
-| | Kostenlose Apple-ID | Bezahlter Developer-Account (99 €/Jahr) |
+| | Free Apple ID | Paid developer account (99 €/year) |
 |---|---|---|
-| Hält | 7 Tage | 1 Jahr |
-| iPhone muss an den Rechner | Ja | Nein, nur die Datei hin und zurück |
-| Gebraucht wird | iPhone und `.ipa` | `.ipa` und die UDID des iPhones |
+| Lasts | 7 days | 1 year |
+| iPhone has to be at the computer | Yes | No, only the file goes back and forth |
+| Needed | iPhone and `.ipa` | `.ipa` and the iPhone's UDID |
 
 **Sideloadly (Windows, macOS)**
 
-1. [Sideloadly](https://sideloadly.io) installieren. Unter Windows zusätzlich iTunes und iCloud direkt von Apple, nicht aus dem Microsoft Store.
-2. iPhone per Kabel anschließen, entsperren, **Vertrauen** tippen.
-3. `Nightshift.ipa` ins Fenster ziehen, Apple-ID eintragen, **Start**.
-4. Passwort und Bestätigungscode eingeben, warten bis **Done**.
+1. Install [Sideloadly](https://sideloadly.io). On Windows also install iTunes and iCloud directly from Apple, not from the Microsoft Store.
+2. Connect the iPhone by cable, unlock it, tap **Trust**.
+3. Drag `Nightshift.ipa` into the window, enter the Apple ID, click **Start**.
+4. Enter password and verification code, wait for **Done**.
 
-**Developer-Account:** Die UDID des iPhones unter [developer.apple.com/account](https://developer.apple.com/account) → **Devices** eintragen, die `.ipa` mit einem Profil signieren, das dieses iPhone enthält, und die signierte Datei mit Sideloadly aufspielen. Die UDID zeigt Sideloadly bei der Geräteinfo, oder iTunes, wenn man in der Übersicht mehrmals auf **Seriennummer** klickt.
+**Developer account:** Add the iPhone's UDID at [developer.apple.com/account](https://developer.apple.com/account) → **Devices**, sign the `.ipa` with a profile that contains this iPhone and install the signed file with Sideloadly. Sideloadly shows the UDID in the device info, iTunes shows it after clicking **Serial Number** a few times in the summary.
 
 **iloader (Linux)**
 
@@ -62,48 +63,50 @@ Messenger blockieren manchmal `.ipa`-Dateien. Dann vor dem Verschicken zippen.
 sudo pacman -S usbmuxd && sudo systemctl start usbmuxd
 ```
 
-Dann [iloader](https://github.com/nab138/iloader) als AppImage starten, mit der Apple-ID anmelden und `Nightshift.ipa` als eigene IPA wählen. Nicht selbst getestet, im Zweifel Sideloadly nehmen.
+Then start [iloader](https://github.com/nab138/iloader) as AppImage, sign in with the Apple ID and choose `Nightshift.ipa` as custom IPA. Not tested by me, use Sideloadly if in doubt.
 
-### 3. Einmalig freischalten
+### 3. Allow it once
 
-1. **Einstellungen → Allgemein → VPN & Geräteverwaltung** → Entwickler-App antippen → **Vertrauen**.
-2. **Einstellungen → Datenschutz & Sicherheit → Entwicklermodus** einschalten. Der Schalter erscheint erst nach der Installation. Das iPhone startet neu, danach **Aktivieren** tippen.
+1. **Settings → General → VPN & Device Management** → tap the developer app → **Trust**.
+2. **Settings → Privacy & Security → Developer Mode** on. The switch only shows up after installing. The iPhone restarts, then tap **Turn On**.
 
 ## Updates
 
 > [!IMPORTANT]
-> 1. **Die App nie löschen.** Damit sind alle Schichten weg.
-> 2. **Immer dieselbe Apple-ID zum Signieren nehmen.** Mit einer anderen installiert sich eine zweite App ohne deine Daten.
-> 3. **Über die vorhandene App installieren.** Schritt 1 und 2 wiederholen, die Daten bleiben.
+> 1. **Never delete the app.** All your shifts are gone with it.
+> 2. **Always sign with the same Apple ID.** A different one installs a second app without your data.
+> 3. **Install over the existing app.** Repeat steps 1 and 2, your data stays.
 
-Läuft die Signatur ab (7 Tage oder 1 Jahr), öffnet sich die App nicht mehr, die Daten sind aber noch da. Einfach Schritt 2 mit derselben `.ipa` und derselben Apple-ID wiederholen. Ein fester Termin pro Woche hilft.
+When the signature expires (7 days or 1 year) the app no longer opens, but the data is still there. Repeat step 2 with the same `.ipa` and the same Apple ID. A fixed day each week helps.
 
 <details>
-<summary>Wenn etwas nicht klappt</summary>
+<summary>Troubleshooting</summary>
 
-| Problem | Lösung |
+| Problem | Fix |
 |---|---|
-| App öffnet sich kurz und schließt sofort | Signatur abgelaufen → Schritt 2 wiederholen. Oder Entwicklermodus aus → Schritt 3. |
-| „Nicht vertrauenswürdiger Entwickler“ | Schritt 3, Entwickler vertrauen. |
-| Schalter „Entwicklermodus“ fehlt | Erst die App installieren, dann nachsehen. |
-| Sideloadly erkennt das iPhone nicht | Entsperren, **Vertrauen** tippen, anderes Kabel, unter Windows iTunes von Apple installieren. |
-| Fehler wegen zu vieler Apps | Eine kostenlose Apple-ID darf nur 3 selbst signierte Apps gleichzeitig haben. Eine löschen. |
-| Fehler wegen zu vieler App-IDs | Kostenlose Apple-IDs dürfen pro Woche nur wenige neue Apps registrieren. Ein paar Tage warten. |
-| Daten weg nach Neuinstallation | App wurde gelöscht oder mit anderer Apple-ID signiert. Immer überschreiben, immer dieselbe Apple-ID. |
+| App opens briefly and closes right away | Signature expired → repeat step 2. Or Developer Mode is off → step 3. |
+| "Untrusted Developer" | Step 3, trust the developer. |
+| "Developer Mode" switch is missing | Install the app first, then look again. |
+| Sideloadly doesn't find the iPhone | Unlock it, tap **Trust**, try another cable, on Windows install iTunes from Apple. |
+| Error about too many apps | A free Apple ID may only have 3 self signed apps at once. Delete one. |
+| Error about too many App IDs | Free Apple IDs may only register a few new apps per week. Wait a few days. |
+| Data gone after reinstalling | The app was deleted or signed with a different Apple ID. Always install over it, always with the same Apple ID. |
 
 </details>
 
-## Entwickeln
+## Development
 
-GitHub Actions erzeugt das Projekt mit [XcodeGen](https://github.com/yonaskolb/XcodeGen), testet und baut bei jedem Push auf `main` eine unsignierte `Nightshift.ipa`. Ein Tag `v*` veröffentlicht sie als Release.
+GitHub Actions generates the project with [XcodeGen](https://github.com/yonaskolb/XcodeGen), runs the tests and builds an unsigned `Nightshift.ipa` on every push to `main`. A `v*` tag publishes it as a release.
 
 ```sh
-git tag v1.1.1 && git push origin v1.1.1
+git tag v1.2 && git push origin v1.2
 ```
+
+Texts are written in English in the code, German lives in `Nightshift/de.lproj`.
 
 ## Support
 
-nightshift ist kostenlos und bleibt kostenlos.
+nightshift is free and stays free.
 
 Buy me a coffee:
 
@@ -111,6 +114,6 @@ Buy me a coffee:
   <a href="https://pay.msero.de"><img src="https://img.shields.io/badge/Donate-PayPal-111111?style=for-the-badge&logo=paypal&logoColor=white" alt="Donate with PayPal"></a>
 </p>
 
-## Lizenz
+## License
 
 [MIT](LICENSE)
