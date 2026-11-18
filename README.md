@@ -5,7 +5,7 @@
 <h1 align="center">nightshift</h1>
 
 <p align="center">
-  <em>Schichtplan und Arbeitsstunden auf einen Blick.</em>
+  <em>Schichtplan, Arbeitsstunden und Überstunden auf einen Blick.</em>
 </p>
 
 <p align="center">
@@ -98,7 +98,7 @@ Läuft die Signatur ab (7 Tage oder 1 Jahr), öffnet sich die App nicht mehr, di
 GitHub Actions erzeugt das Projekt mit [XcodeGen](https://github.com/yonaskolb/XcodeGen), testet und baut bei jedem Push auf `main` eine unsignierte `Nightshift.ipa`. Ein Tag `v*` veröffentlicht sie als Release.
 
 ```sh
-git tag v1.1 && git push origin v1.1
+git tag v1.1.1 && git push origin v1.1.1
 ```
 
 ## Support
