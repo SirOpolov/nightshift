@@ -7,16 +7,20 @@ struct NightshiftApp: App {
     @AppStorage("fontSize") private var fontSize = 2
     @AppStorage("accent") private var accentHex = ""
 
+    init() {
+        UserDefaults.standard.set([UserDefaults.standard.string(forKey: "language") ?? "en"], forKey: "AppleLanguages")
+    }
+
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Kalender", systemImage: "calendar") {
+                Tab("Calendar", systemImage: "calendar") {
                     CalendarView()
                 }
-                Tab("Auswertung", systemImage: "chart.bar") {
+                Tab("Statistics", systemImage: "chart.bar") {
                     StatsView()
                 }
-                Tab("Einstellungen", systemImage: "gearshape") {
+                Tab("Settings", systemImage: "gearshape") {
                     SettingsView()
                 }
             }

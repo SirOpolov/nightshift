@@ -17,6 +17,14 @@ struct ShiftType: Codable, Identifiable, Hashable {
         return duration - 30
     }
 
+    var title: String {
+        Bundle.main.localizedString(forKey: id, value: id, table: "Shifts")
+    }
+
+    var label: String {
+        name.isEmpty ? title : title + " (" + name + ")"
+    }
+
     var time: String {
         guard let start, let end else { return "" }
         return start + " – " + end

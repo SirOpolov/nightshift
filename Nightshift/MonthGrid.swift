@@ -13,12 +13,12 @@ struct MonthGrid: View {
     var body: some View {
         Grid(horizontalSpacing: 4, verticalSpacing: 4) {
             GridRow {
-                Text("KW")
+                Text("CW")
                     .foregroundStyle(Color.secondary)
                     .frame(width: 26)
-                ForEach(weekdays, id: \.self) { name in
-                    Text(name)
-                        .foregroundStyle(name == "Sa" || name == "So" ? accent : Color.secondary)
+                ForEach(0..<7, id: \.self) { index in
+                    Text(weekdays[index])
+                        .foregroundStyle(index >= 5 ? accent : Color.secondary)
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -76,7 +76,7 @@ struct DayCell: View {
             Text(String(calendar.component(.day, from: date)))
                 .font(.subheadline.weight(today ? .heavy : .regular))
             if let shift {
-                Text(shift.id)
+                Text(shift.title)
                     .font(.caption.weight(.semibold))
                 Text(shift.name)
                     .font(.caption2)

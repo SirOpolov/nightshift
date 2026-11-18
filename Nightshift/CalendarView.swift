@@ -89,9 +89,9 @@ struct CalendarView: View {
 
     private var hint: String {
         if tool == nil {
-            return "Schicht wählen"
+            return String(localized: "Choose a shift")
         }
-        return start == nil ? "Starttag tippen" : "Endtag tippen"
+        return start == nil ? String(localized: "Tap the start day") : String(localized: "Tap the end day")
     }
 
     private var monthView: some View {
@@ -137,9 +137,9 @@ struct CalendarView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(store.shiftTypes) { shift in
-                        chip(shift.id, shift.id, shift.tint)
+                        chip(shift.id, shift.title, shift.tint)
                     }
-                    chip("", "Löschen", .white)
+                    chip("", String(localized: "Delete"), .white)
                 }
                 .padding(.horizontal, 12)
             }

@@ -2,11 +2,11 @@ import Foundation
 
 let calendar: Calendar = {
     var calendar = Calendar(identifier: .iso8601)
-    calendar.locale = Locale(identifier: "de_DE")
+    calendar.locale = Locale(identifier: Bundle.main.preferredLocalizations.first ?? "en")
     return calendar
 }()
 
-let weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+let weekdays = [String(localized: "Mo"), String(localized: "Tu"), String(localized: "We"), String(localized: "Th"), String(localized: "Fr"), String(localized: "Sa"), String(localized: "Su")]
 
 func day(_ year: Int, _ month: Int, _ day: Int) -> Date {
     calendar.date(from: DateComponents(year: year, month: month, day: day))!

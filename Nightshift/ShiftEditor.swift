@@ -19,7 +19,7 @@ struct ShiftEditor: View {
                     Circle()
                         .fill(shift.tint)
                         .frame(width: 12, height: 12)
-                    Text(shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")")
+                    Text(shift.label)
                     Spacer()
                     Text(shift.time)
                         .foregroundStyle(.secondary)
@@ -29,11 +29,11 @@ struct ShiftEditor: View {
             }
             .foregroundStyle(.primary)
         }
-        .navigationTitle("Schichten anpassen")
+        .navigationTitle("Edit Shifts")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             HStack(spacing: 12) {
-                Button("Hinzufügen") {
+                Button("Add") {
                     adding = true
                 }
                 .buttonStyle(.glassProminent)
@@ -42,17 +42,17 @@ struct ShiftEditor: View {
                         .frame(minWidth: 320, minHeight: 360)
                         .presentationCompactAdaptation(.popover)
                 }
-                Button("Löschen", role: .destructive) {
+                Button("Delete", role: .destructive) {
                     confirmDelete = true
                 }
                 .buttonStyle(.glass)
                 .disabled(selected.isEmpty)
                 .confirmationDialog(
-                    selected.count == 1 ? "Schicht löschen?" : String(selected.count) + " Schichten löschen?",
+                    selected.count == 1 ? String(localized: "Delete shift?") : String(localized: "Delete \(selected.count) shifts?"),
                     isPresented: $confirmDelete,
                     titleVisibility: .visible
                 ) {
-                    Button("Löschen", role: .destructive) {
+                    Button("Delete", role: .destructive) {
                         store.remove(selected)
                         selected = []
                     }
@@ -79,27 +79,27 @@ struct ShiftForm: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Schichtname (z. B. F15)", text: $id)
-                    TextField("Schichtbeschreibung (z. B. früh)", text: $name)
-                    DatePicker("Beginn", selection: $start, displayedComponents: .hourAndMinute)
-                    DatePicker("Ende", selection: $end, displayedComponents: .hourAndMinute)
+                    TextField("Shift name (e.g. F15)", text: $id)
+                    TextField("Shift description (e.g. early)", text: $name)
+                    DatePicker("Start", selection: $start, displayedComponents: .hourAndMinute)
+                    DatePicker("End", selection: $end, displayedComponents: .hourAndMinute)
                 } footer: {
                     if store.shiftTypes.contains(where: { $0.id == id }) {
-                        Text("Diesen Schichtnamen gibt es schon.")
+                        Text("This shift name already exists.")
                     }
                 }
             }
-            .navigationTitle("Neue Schicht")
+            .navigationTitle("New Shift")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 HStack(spacing: 12) {
-                    Button("Hinzufügen") {
+                    Button("Add") {
                         store.add(id: id, name: name, start: time(start), end: time(end))
                         dismiss()
                     }
                     .buttonStyle(.glassProminent)
                     .disabled(!valid)
-                    Button("Abbrechen") {
+                    Button("Cancel") {
                         dismiss()
                     }
                     .buttonStyle(.glass)

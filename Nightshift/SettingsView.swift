@@ -2,13 +2,14 @@ import SwiftUI
 import QuickLook
 
 let fontSizes: [DynamicTypeSize] = [.small, .medium, .large, .xLarge, .xxLarge]
-let fontSizeNames = ["Klein", "Mittel", "Normal", "Groß", "Sehr groß"]
+let fontSizeNames = [String(localized: "Small"), String(localized: "Medium"), String(localized: "Normal"), String(localized: "Large"), String(localized: "Extra Large")]
 
 struct SettingsView: View {
     @Environment(Store.self) private var store
     @AppStorage("theme") private var theme = 0
     @AppStorage("fontSize") private var fontSize = 2
     @AppStorage("accent") private var accent = ""
+    @AppStorage("language") private var language = "en"
     @State private var confirmDelete = false
     @State private var exportYear = calendar.component(.year, from: .now)
     @State private var pdf: URL?
@@ -18,15 +19,23 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker("Erscheinungsbild", selection: $theme) {
+                    Picker("Theme", selection: $theme) {
                         Text("Auto").tag(0)
-                        Text("Hell").tag(1)
-                        Text("Dunkel").tag(2)
+                        Text("Light").tag(1)
+                        Text("Dark").tag(2)
                     }
                     .pickerStyle(.segmented)
-                    Stepper("Schriftgröße: " + fontSizeNames[fontSize], value: $fontSize, in: 0...4)
+                    Stepper("Font size: \(fontSizeNames[fontSize])", value: $fontSize, in: 0...4)
                 } header: {
-                    Text("Darstellung")
+                    Text("Appearance")
+                }
+                Section {
+                    Picker("Language", selection: $language) {
+                        Text(verbatim: "English").tag("en")
+                        Text(verbatim: "Deutsch").tag("de")
+                    }
+                } footer: {
+                    Text("Takes effect after restarting the app.")
                 }
                 Section {
                     HStack(spacing: 10) {
@@ -48,7 +57,7 @@ struct SettingsView: View {
                             .buttonStyle(.borderless)
                         }
                     }
-                    ColorPicker("Eigene Farbe", selection: Binding(get: { themeColor(accent) }, set: { accent = hexString($0) }), supportsOpacity: false)
+                    ColorPicker("Custom Color", selection: Binding(get: { themeColor(accent) }, set: { accent = hexString($0) }), supportsOpacity: false)
                     HStack {
                         Text("Hex")
                         TextField("#RRGGBB", text: $accent)
@@ -58,15 +67,15 @@ struct SettingsView: View {
                             .multilineTextAlignment(.trailing)
                     }
                     if !accent.isEmpty {
-                        Button("Standardfarbe wiederherstellen") {
+                        Button("Restore Default Color") {
                             accent = ""
                         }
                     }
                 } header: {
-                    Text("Akzentfarbe")
+                    Text("Accent Color")
                 }
                 Section {
-                    NavigationLink("Schichten anpassen") {
+                    NavigationLink("Edit Shifts") {
                         ShiftEditor()
                     }
                     ForEach(store.shiftTypes) { shift in
@@ -74,49 +83,49 @@ struct SettingsView: View {
                             Circle()
                                 .fill(shift.tint)
                                 .frame(width: 12, height: 12)
-                            Text(shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")")
+                            Text(shift.label)
                             Spacer()
                             Text(shift.time)
                                 .foregroundStyle(.secondary)
                         }
                     }
                 } header: {
-                    Text("Schichten")
+                    Text("Shifts")
                 } footer: {
-                    Text("Pro Arbeitstag werden 30 Minuten Pause abgezogen. Urlaub und Frei zählen 0 Stunden. Die Auswertung zählt nur Tage bis heute.")
+                    Text("A 30 minute break is deducted per work day. Vacation and Day off count 0 hours. Statistics only count days up to today.")
                 }
                 Section {
-                    Picker("Jahr", selection: $exportYear) {
+                    Picker("Year", selection: $exportYear) {
                         ForEach(years, id: \.self) { value in
                             Text(String(value)).tag(value)
                         }
                     }
-                    Button("PDF exportieren") {
+                    Button("Export PDF") {
                         pdf = renderReport(YearReport(store: store, year: exportYear))
                     }
                 } header: {
                     Text("Export")
                 } footer: {
-                    Text("Jahresauswertung als PDF zum Teilen, Speichern oder Drucken.")
+                    Text("Yearly report as PDF to share, save or print.")
                 }
                 Section {
                     LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-                    LabeledContent("Einträge", value: String(store.entries.count))
+                    LabeledContent("Entries", value: String(store.entries.count))
                 } header: {
                     Text("Info")
                 }
                 Section {
-                    Button("Alle Daten löschen", role: .destructive) {
+                    Button("Delete All Data", role: .destructive) {
                         confirmDelete = true
                     }
-                    .confirmationDialog("Alle Einträge löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
-                        Button("Löschen", role: .destructive) {
+                    .confirmationDialog("Delete all entries?", isPresented: $confirmDelete, titleVisibility: .visible) {
+                        Button("Delete", role: .destructive) {
                             store.clear()
                         }
                     }
                 }
             }
-            .navigationTitle("Einstellungen")
+            .navigationTitle("Settings")
             .quickLookPreview($pdf)
         }
     }

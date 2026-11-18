@@ -20,7 +20,7 @@ struct YearReport {
 
 @MainActor
 func renderReport(_ report: YearReport) -> URL? {
-    let url = URL.temporaryDirectory.appending(path: "Nightshift Auswertung " + String(report.year) + ".pdf")
+    let url = URL.temporaryDirectory.appending(path: String(localized: "Nightshift Report \(String(report.year))") + ".pdf")
     var box = CGRect(x: 0, y: 0, width: 595, height: 842)
     guard let context = CGContext(url as CFURL, mediaBox: &box, nil) else { return nil }
     let renderer = ImageRenderer(content: ReportPage(report: report).environment(\.colorScheme, .light))
@@ -39,35 +39,34 @@ struct ReportPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Auswertung " + String(report.year))
+                Text("Report \(String(report.year))")
                     .font(.system(size: 24, weight: .bold))
-                Text("Erstellt am " + today + " · Pro Arbeitstag 30 Minuten Pause abgezogen · Nur Tage bis heute")
+                Text("Created on \(today) · 30 minute break deducted per work day · Only days up to today")
                     .font(.system(size: 9))
                     .foregroundStyle(Color.gray)
             }
             HStack(spacing: 30) {
-                summary("Stunden", hours(report.total.minutes))
-                summary("Arbeitstage", String(report.workDays(report.total)))
-                summary("Urlaubstage", String(report.total.vacationDays))
+                summary("Hours", hours(report.total.minutes))
+                summary("Work days", String(report.workDays(report.total)))
+                summary("Vacation days", String(report.total.vacationDays))
             }
             ReportTable(
-                title: "Monate",
-                header: ["Monat", "Arbeitstage", "Urlaub", "Stunden"],
+                title: "Months",
+                header: [String(localized: "Month"), String(localized: "Work days"), String(localized: "Vacation"), String(localized: "Hours")],
                 rows: (0..<12).map { index in
                     let stats = report.months[index]
                     return [monthName(index + 1), String(report.workDays(stats)), String(stats.vacationDays), hours(stats.minutes)]
                 },
-                total: ["Gesamt", String(report.workDays(report.total)), String(report.total.vacationDays), hours(report.total.minutes)]
+                total: [String(localized: "Total"), String(report.workDays(report.total)), String(report.total.vacationDays), hours(report.total.minutes)]
             )
             ReportTable(
-                title: "Schichten",
-                header: ["Schicht", "Zeit", "Anzahl", "Stunden"],
+                title: "Shifts",
+                header: [String(localized: "Shift"), String(localized: "Time"), String(localized: "Count"), String(localized: "Hours")],
                 rows: report.shifts.map { shift in
                     let count = report.total.counts[shift.id] ?? 0
-                    let label = shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")"
-                    return [label, shift.time, String(count), hours(count * shift.minutes)]
+                    return [shift.label, shift.time, String(count), hours(count * shift.minutes)]
                 },
-                total: ["Gesamt", "", String(report.total.counts.values.reduce(0, +)), hours(report.total.minutes)]
+                total: [String(localized: "Total"), "", String(report.total.counts.values.reduce(0, +)), hours(report.total.minutes)]
             )
             Spacer(minLength: 0)
         }
@@ -77,7 +76,7 @@ struct ReportPage: View {
         .background(Color.white)
     }
 
-    private func summary(_ label: String, _ value: String) -> some View {
+    private func summary(_ label: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(label)
                 .font(.system(size: 9))
@@ -89,7 +88,7 @@ struct ReportPage: View {
 }
 
 struct ReportTable: View {
-    let title: String
+    let title: LocalizedStringKey
     let header: [String]
     let rows: [[String]]
     let total: [String]
@@ -137,7 +136,5 @@ struct ReportTable: View {
 }
 
 private var today: String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "dd.MM.yyyy"
-    return formatter.string(from: .now)
+    Date.now.formatted(date: .numeric, time: .omitted)
 }

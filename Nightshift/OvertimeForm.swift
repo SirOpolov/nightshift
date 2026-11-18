@@ -4,36 +4,38 @@ struct OvertimeForm: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
     let date: Date
-    @State private var hours = 0
-    @State private var minutes = 0
+    @State private var hours = ""
+    @State private var minutes = ""
+    @State private var hoursSelection: TextSelection?
+    @State private var minutesSelection: TextSelection?
 
     private var valid: Bool {
-        (0...23).contains(hours) && (0...59).contains(minutes)
+        (Int(hours) ?? 0) <= 23 && (Int(minutes) ?? 0) <= 59
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    field("Stunden", $hours)
-                    field("Minuten", $minutes)
+                    field("Hours", $hours, $hoursSelection)
+                    field("Minutes", $minutes, $minutesSelection)
                 } footer: {
                     if !valid {
-                        Text("Höchstens 23 Stunden und 59 Minuten.")
+                        Text("At most 23 hours and 59 minutes.")
                     }
                 }
             }
-            .navigationTitle("Überstunden " + date.formatted(.dateTime.day().month(.twoDigits)))
+            .navigationTitle(String(localized: "Overtime \(date.formatted(.dateTime.day().month(.twoDigits)))"))
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
                 HStack(spacing: 12) {
-                    Button("Speichern") {
-                        store.setOvertime(hours * 60 + minutes, on: date)
+                    Button("Save") {
+                        store.setOvertime((Int(hours) ?? 0) * 60 + (Int(minutes) ?? 0), on: date)
                         dismiss()
                     }
                     .buttonStyle(.glassProminent)
                     .disabled(!valid)
-                    Button("Abbrechen") {
+                    Button("Cancel") {
                         dismiss()
                     }
                     .buttonStyle(.glass)
@@ -43,17 +45,31 @@ struct OvertimeForm: View {
         }
         .onAppear {
             let total = store.overtimeMinutes(on: date)
-            hours = total / 60
-            minutes = total % 60
+            if total > 0 {
+                hours = String(total / 60)
+                minutes = String(total % 60)
+            }
         }
     }
 
-    private func field(_ label: String, _ value: Binding<Int>) -> some View {
+    private func field(_ label: LocalizedStringKey, _ text: Binding<String>, _ selection: Binding<TextSelection?>) -> some View {
         HStack {
             Text(label)
-            TextField("0", value: value, format: .number)
+            TextField("0", text: text, selection: selection)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
+                .onChange(of: text.wrappedValue) {
+                    let digits = String(text.wrappedValue.filter { ("0"..."9").contains($0) }.prefix(2))
+                    if digits != text.wrappedValue {
+                        text.wrappedValue = digits
+                    }
+                }
+                .onChange(of: selection.wrappedValue) {
+                    let end = TextSelection(insertionPoint: text.wrappedValue.endIndex)
+                    if selection.wrappedValue != end {
+                        selection.wrappedValue = end
+                    }
+                }
         }
     }
 }

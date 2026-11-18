@@ -10,10 +10,10 @@ struct StatsView: View {
                 VStack(spacing: 16) {
                     SummaryCard(stats: store.stats(from: day(year, 1, 1), to: day(year, 12, 31)))
                     HStack {
-                        Text("Jahr")
+                        Text("Year")
                             .font(.headline)
                         Spacer()
-                        Picker("Jahr", selection: $year) {
+                        Picker("Year", selection: $year) {
                             ForEach(years, id: \.self) { value in
                                 Text(String(value)).tag(value)
                             }
@@ -36,7 +36,7 @@ struct StatsView: View {
                 }
                 .padding(16)
             }
-            .navigationTitle("Auswertung")
+            .navigationTitle("Statistics")
         }
     }
 
@@ -84,10 +84,10 @@ struct SummaryCard: View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top, spacing: 16) {
-                    total("Stunden gearbeitet", stats.minutes)
-                    total("Überstunden gemacht", stats.overtime)
+                    total("Hours worked", stats.minutes)
+                    total("Overtime worked", stats.overtime)
                 }
-                Label(String(stats.vacationDays) + (stats.vacationDays == 1 ? " Tag Urlaub" : " Tage Urlaub"), systemImage: "sun.max.fill")
+                Label(stats.vacationDays == 1 ? String(localized: "1 vacation day") : String(localized: "\(stats.vacationDays) vacation days"), systemImage: "sun.max.fill")
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
@@ -104,7 +104,7 @@ struct SummaryCard: View {
                         Circle()
                             .fill(shift.tint)
                             .frame(width: 12, height: 12)
-                        Text(shift.name.isEmpty ? shift.id : shift.id + " (" + shift.name + ")")
+                        Text(shift.label)
                         Spacer()
                         Text(String(count) + "×")
                             .foregroundStyle(Color.secondary)
@@ -122,7 +122,7 @@ struct SummaryCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 
-    private func total(_ label: String, _ minutes: Int) -> some View {
+    private func total(_ label: LocalizedStringKey, _ minutes: Int) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
                 .font(.subheadline.weight(.medium))
@@ -167,7 +167,7 @@ struct WeekCard: View {
         let stats = store.stats(from: days[0], to: days[days.count - 1])
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("KW " + String(weekNumber(week)))
+                Text("CW \(weekNumber(week))")
                     .font(.headline)
                     .foregroundStyle(accent)
                 Spacer()
@@ -179,7 +179,7 @@ struct WeekCard: View {
                     HStack {
                         Text(weekdays[index] + " " + String(calendar.component(.day, from: date)) + ".")
                             .frame(width: 60, alignment: .leading)
-                        Text(shift.name.isEmpty ? shift.id : shift.id + " " + shift.name)
+                        Text(shift.label)
                             .foregroundStyle(.black)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 4)
