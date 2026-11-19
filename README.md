@@ -106,8 +106,6 @@ Texts are written in English in the code, German lives in `Nightshift/de.lproj`.
 
 ## Support
 
-nightshift is free and stays free.
-
 Buy me a coffee:
 
 <p align="center">
